@@ -1,6 +1,12 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 
 const app = express();
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.get("/data", (_: Request, res: Response) => {
   res.send("Lorem Ipsum!");
