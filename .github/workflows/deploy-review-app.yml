@@ -43,7 +43,6 @@ jobs:
           cd infrastructure/tenants/remus
           terragrunt apply -auto-approve
 
-      # TODO: Maybe create docker container earlier
       - name: Deploy to ECS
         run: |
           export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr

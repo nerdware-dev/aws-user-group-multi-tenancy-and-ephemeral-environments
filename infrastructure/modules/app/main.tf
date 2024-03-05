@@ -12,8 +12,8 @@ module "vpc" {
 
 ### Route53
 
-resource "aws_route53_zone" "frontend_zone" {
-  name = "${var.base_url}"
+data "aws_route53_zone" "frontend_zone" {
+  name = "demo.nerdware.dev"
 }
 
 ### Frontend
@@ -21,15 +21,15 @@ resource "aws_route53_zone" "frontend_zone" {
 module "frontend" {
   source                  = "../frontend"
   app_name                = var.app_name
-  # aliases                 = [aws_route53_zone.frontend_zone.name]
-  # cloudfront_ssl_cert_arn = module.dns_frontend.cert_arn
+  aliases                 = [var.base_url]
+  cloudfront_ssl_cert_arn = module.dns_frontend.cert_arn
   delete_on_destroy       = true
 }
 
 module "dns_frontend" {
   source      = "../dns"
   domain_name = var.base_url
-  zone_id     = aws_route53_zone.frontend_zone.zone_id
+  zone_id     = data.aws_route53_zone.frontend_zone.zone_id
   linked_url  = module.frontend.cloudfront_url
   providers = {
     aws.us_east_1 = aws.us_east_1
@@ -59,20 +59,19 @@ module "backend" {
   private_subnet_ids  = module.vpc.private_subnets_ids
   public_subnet_ids   = module.vpc.public_subnets_ids
   vpc_id              = module.vpc.vpc_id
-  # alb_tls_cert_arn    = module.dns_backend.regional_cert_arn
+  alb_tls_cert_arn    = module.dns_backend.regional_cert_arn
   ecs_role_arn        = module.iam.ecs_role_arn
   ecs_settings        = var.ecs_settings
 }
 
-
-resource "aws_route53_zone" "backend_zone" {
-  name = "api.${var.base_url}"
+data "aws_route53_zone" "backend_zone" {
+  name = "demo.nerdware.dev"
 }
 
 module "dns_backend" {
   source      = "../dns"
   domain_name = "api.${var.base_url}"
-  zone_id     = aws_route53_zone.backend_zone.zone_id
+  zone_id     = data.aws_route53_zone.backend_zone.zone_id
   linked_url  = module.backend.load_balancer_url
   providers = {
     aws.us_east_1 = aws.us_east_1

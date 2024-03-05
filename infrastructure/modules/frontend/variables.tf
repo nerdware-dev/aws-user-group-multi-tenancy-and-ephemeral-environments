@@ -3,10 +3,10 @@ variable "app_name" {
   type        = string
 }
 
-# variable "aliases" {
-#   type        = list(string)
-#   description = "Extra CNAMEs (alternate domain names), if any, for this distribution."
-# }
+variable "aliases" {
+  type        = list(string)
+  description = "Extra CNAMEs (alternate domain names), if any, for this distribution."
+}
 
 variable "error_ttl" {
   type        = number
@@ -62,10 +62,10 @@ variable "max_ttl" {
   description = "Maximum amount of time (in seconds) that an object is in a CloudFront cache"
 }
 
-# variable "cloudfront_ssl_cert_arn" {
-#   type        = string
-#   description = "ACM certificate Arn."
-# }
+variable "cloudfront_ssl_cert_arn" {
+  type        = string
+  description = "ACM certificate Arn."
+}
 
 variable "delete_on_destroy" {
   type        = bool
