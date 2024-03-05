@@ -12,11 +12,14 @@ jobs:
   deploye:
     name: Deploy Review App
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment:
+      name: ${{ inputs.environment }}
+      url: https://dsyk0b4nlo587.cloudfront.net
     env:
       TENANT: ${{ vars.TENANT}}
       AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
       PR_NUMBER: ${{ github.event.number }}
+      # Needed for terragrunt to disinguish different review environments
       APP_PREFIX: ${{ github.event.number }}
       APP_NAME: ${{ vars.TENANT}}-${{ github.event.number }}-demo
     steps:
@@ -59,7 +62,7 @@ jobs:
           cd ./frontend
           npm install
 
-          echo "NEXT_PUBLIC_API_URL=TODO" >> .env.local
+          echo "NEXT_PUBLIC_API_URL=remus-1-demo-lb-272434160.eu-central-1.elb.amazonaws.com" >> .env.local
 
           npm run build
           aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete
