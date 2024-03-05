@@ -67,7 +67,7 @@ jobs:
           ROOT_DIR=$(pwd)
           export APP_PREFIX=$PR_NUMBER
           export APP_NAME=$TENANT-$PR_NUMBER-demo
-          export SERVICE_NAME=$APP_NAME-service
+          export SERVICE_ARN=arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$APP_NAME-service
           export CLUSTER_NAME=$APP_NAME-cluster
           export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr
           export FRONTEND_DESTINATION_BUCKET=s3://$APP_NAME-frontend-bucket
@@ -83,10 +83,10 @@ jobs:
           docker build -t "$ECR":latest -f Dockerfile .
           docker push "$ECR":latest
 
-          aws ecs update-service --cluster $CLUSTER_NAME
-          \ --service arn:aws:ecs:eu-central-1:$AWS_ACCOUNT_ID:service/$SERVICE_NAME
-          \ --region eu-central-1
-          \ --force-new-deployment > /dev/null
+          aws ecs update-service --cluster $CLUSTER_NAME \
+            --service SERVICE_ARN \
+            --region eu-central-1 \
+            --force-new-deployment > /dev/null
 
           cd $ROOT_DIR/frontend
           npm install
