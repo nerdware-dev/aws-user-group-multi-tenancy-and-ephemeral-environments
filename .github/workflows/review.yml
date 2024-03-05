@@ -54,13 +54,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Setup terragrunt
-        uses: gruntwork-io/terragrunt-action@v2
+      # - name: Setup terragrunt
+      #   uses: gruntwork-io/terragrunt-action@v2
+      #   with:
+      #     tf_version: ${{ env.tf_version }}
+      #     tg_version: ${{ env.tg_version }}
+      #     tg_dir: ${{ env.working_dir }}
+      #     tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
+
+      - name: Setup Terragrunt
+        uses: autero1/action-terragrunt@v3
         with:
-          tf_version: ${{ env.tf_version }}
-          tg_version: ${{ env.tg_version }}
-          tg_dir: ${{ env.working_dir }}
-          tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
+          terragrunt-version: 0.55.2
 
       # TODO: Extract
       - name: Prepare Review App
