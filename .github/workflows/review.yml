@@ -11,25 +11,6 @@ on:
     # - labeled
 
 jobs:
-  # build:
-  #   name: Build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-
-  #     - name: Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18
-  #         cache: npm
-
-  #     - name: Install dependencies
-  #       run: npm install
-
-  #     - name: Build
-  #       run: npm run build
-  # TODO: Build docker and publish already? => Not money relevant
-
   deploy-review-remus:
     name: Deploy Remus Review
     uses: ./.github/workflows/deploy-review-app.yml

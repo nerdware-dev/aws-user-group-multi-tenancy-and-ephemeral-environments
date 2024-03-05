@@ -6,6 +6,10 @@ app.get("/data", (_: Request, res: Response) => {
   res.send("Lorem Ipsum!");
 });
 
+app.get("/health", (_: Request, res: Response) => {
+  res.send("OK");
+});
+
 app.listen(3000, () => console.log("Server is running on port 3000"));
 
 process.on("SIGINT", () => process.exit());
