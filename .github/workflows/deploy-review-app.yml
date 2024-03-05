@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
-      url: https://dsyk0b4nlo587.cloudfront.net
+      url: https://${{ vars.TENANT}}.${{ github.event.number }}-demo.nerdware.dev
     env:
       TENANT: ${{ vars.TENANT}}
-      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       PR_NUMBER: ${{ github.event.number }}
       # Needed for terragrunt to disinguish different review environments
       APP_PREFIX: ${{ github.event.number }}
@@ -34,13 +34,13 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ vars.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
       - name: Apply Terraform
         run: |
-          cd infrastructure/tenants/remus
+          cd infrastructure/tenants/$TENANT
           terragrunt apply -auto-approve
 
       - name: Deploy to ECS
@@ -61,7 +61,7 @@ jobs:
           cd ./frontend
           npm install
 
-          echo "NEXT_PUBLIC_API_URL='http://remus-1-demo-lb-272434160.eu-central-1.elb.amazonaws.com'" >> .env.local
+          echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$PR_NUMBER-demo.nerdware.dev'" >> .env.local
 
           npm run build
           aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete
