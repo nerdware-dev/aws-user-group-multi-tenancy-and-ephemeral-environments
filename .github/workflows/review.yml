@@ -64,30 +64,30 @@ jobs:
 
       # TODO: Extract
       - name: Prepare Review App
-        run: >
-          - ROOT_DIR=$(pwd)
-          - export SERVICE_NAME=i--$TENANT--$PR_NUMBER-org-service
-          - export ECR=i-$TENANT-$PR_NUMBER-org-ecr
-          - export CLUSTER_NAME=i--$TENANT--$PR_NUMBER-org-cluster
-          - export FRONTEND_DESTINATION_BUCKET=s3://i--$TENANT_SLUG--$PR_NUMBER-org-frontend-bucket
-          - cd infrastructure/tenants
-          - mkdir $PR_NUMBER
-          - cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
-          - cd $PR_NUMBER
-          - terragrunt plan --terragrunt-non-interactive
+        run: |
+          ROOT_DIR=$(pwd)
+          export SERVICE_NAME=i--$TENANT--$PR_NUMBER-org-service
+          export ECR=i-$TENANT-$PR_NUMBER-org-ecr
+          export CLUSTER_NAME=i--$TENANT--$PR_NUMBER-org-cluster
+          export FRONTEND_DESTINATION_BUCKET=s3://i--$TENANT_SLUG--$PR_NUMBER-org-frontend-bucket
+          cd infrastructure/tenants
+          mkdir $PR_NUMBER
+          cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
+          cd $PR_NUMBER
+          terragrunt plan --terragrunt-non-interactive
 
-          - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR
-          - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest -f backend/Dockerfile ./backend
-          - docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest
-          - >
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest -f backend/Dockerfile ./backend
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest
+
             aws ecs update-service --cluster $CLUSTER_NAME
-            --service arn:aws:ecs:eu-central-1:$AWS_ACCOUNT_ID:service/$SERVICE_NAME
-            --region eu-central-1
-            --force-new-deployment > /dev/null
+            \ --service arn:aws:ecs:eu-central-1:$AWS_ACCOUNT_ID:service/$SERVICE_NAME
+            \ --region eu-central-1
+            \ --force-new-deployment > /dev/null
 
-          - cd $ROOT_DIR/frontend
-          - npm install
-          - npm run build
+          cd $ROOT_DIR/frontend
+          npm install
+          npm run build
 
         # TODO: Build frontend for specific tenant
         #   - aws s3 sync frontend/dist $FRONTEND_DESTINATION_BUCKET --delete
