@@ -54,13 +54,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      # - name: Setup terragrunt
-      #   uses: gruntwork-io/terragrunt-action@v2
-      #   with:
-      #     tf_version: ${{ env.tf_version }}
-      #     tg_version: ${{ env.tg_version }}
-      #     tg_dir: ${{ env.working_dir }}
-      #     tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
+      #     "hclfmt --terragrunt-check --terragrunt-diff"
 
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v3
@@ -71,24 +65,27 @@ jobs:
       - name: Prepare Review App
         run: |
           ROOT_DIR=$(pwd)
+          export APP_PREFIX=$PR_NUMBER
           export SERVICE_NAME=i--$TENANT--$PR_NUMBER-org-service
           export ECR=i-$TENANT-$PR_NUMBER-org-ecr
           export CLUSTER_NAME=i--$TENANT--$PR_NUMBER-org-cluster
-          export FRONTEND_DESTINATION_BUCKET=s3://i--$TENANT_SLUG--$PR_NUMBER-org-frontend-bucket
+          export FRONTEND_DESTINATION_BUCKET=s3://i--$TENANT--$PR_NUMBER-org-frontend-bucket
           cd infrastructure/tenants
           mkdir $PR_NUMBER
           cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
           cd $PR_NUMBER
           terragrunt plan --terragrunt-non-interactive
 
+          cd $ROOT_DIR/backend
+
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR
-          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest -f backend/Dockerfile ./backend
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest -f Dockerfile .
           docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest
 
-            aws ecs update-service --cluster $CLUSTER_NAME
-            \ --service arn:aws:ecs:eu-central-1:$AWS_ACCOUNT_ID:service/$SERVICE_NAME
-            \ --region eu-central-1
-            \ --force-new-deployment > /dev/null
+          aws ecs update-service --cluster $CLUSTER_NAME
+          \ --service arn:aws:ecs:eu-central-1:$AWS_ACCOUNT_ID:service/$SERVICE_NAME
+          \ --region eu-central-1
+          \ --force-new-deployment > /dev/null
 
           cd $ROOT_DIR/frontend
           npm install

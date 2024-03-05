@@ -1,14 +1,14 @@
 locals {
   tenant   = "remus"
-  app_name = "${local.tenant}-${include.root.locals.app}"
+  app      = length(get_env("APP_PREFIX", "")) > 0 ? "${get_env("APP_PREFIX", "")}-${include.root.locals.app}" : include.root.locals.app
+  app_name = "${local.tenant}-${local.app}"
 
   backend = {
-    # TODO: Shouldn't this be different per tenant?
-    s3_bucket_name = "${include.root.locals.app}--tf-state"
-    dynamodb_table = "${include.root.locals.app}--terraform-state-lock-table"
+    s3_bucket_name = "${local.app_name}--tf-state"
+    dynamodb_table = "${local.app_name}--terraform-state-lock-table"
   }
 
-  base_url = "${local.tenant}.${include.root.locals.app}.nerdware.dev"
+  base_url = "${local.tenant}.${local.app}.nerdware.dev"
 
   ecs_settings = {
     health_check_path = "/health"
@@ -36,7 +36,7 @@ terraform {
 
 inputs = {
   region   = include.root.locals.region
-  app      = include.root.locals.app
+  app      = local.app
   app_name = local.app_name
   tenant   = local.tenant
   base_url = local.base_url
@@ -57,7 +57,8 @@ remote_state {
     {
       bucket         = local.backend.s3_bucket_name
       dynamodb_table = local.backend.dynamodb_table
-      key            = "terraform-${include.root.locals.app}.tfstate"
+      # TODO: Differ per env
+      key            = "terraform-${local.app_name}.tfstate"
     }
   )
 }

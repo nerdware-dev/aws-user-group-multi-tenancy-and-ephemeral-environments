@@ -73,11 +73,7 @@ resource "aws_cloudfront_distribution" "this" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
+     #   acm_certificate_arn = "arn:aws:iam::123456789012:server-certificate/cloudfront/your-cert-name"
+    #   ssl_support_method  = "sni-only"
   }
-
-  #   viewer_certificate {
-  #   acm_certificate_arn = "arn:aws:iam::123456789012:server-certificate/cloudfront/your-cert-name"
-  #   ssl_support_method  = "sni-only"
-  # }
-
 }
