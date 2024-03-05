@@ -74,7 +74,7 @@ jobs:
           mkdir $PR_NUMBER
           cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
           cd $PR_NUMBER
-          terragrunt plan --terragrunt-non-interactive
+          terragrunt apply --terragrunt-non-interactive
 
           cd $ROOT_DIR/backend
 
