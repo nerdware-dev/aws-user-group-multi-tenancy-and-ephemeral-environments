@@ -1,5 +1,5 @@
 locals {
-  tenant = "remus"
+  tenant   = "remus"
   app_name = "${local.tenant}-${include.root.locals.app}"
 
   backend = {
@@ -20,8 +20,8 @@ locals {
   }
 
   env_vars = {
-    APP_NAME               = local.app_name
-    REGION                 = include.root.locals.region
+    APP_NAME = local.app_name
+    REGION   = include.root.locals.region
   }
 }
 
@@ -35,18 +35,18 @@ terraform {
 }
 
 inputs = {
-  region                   = include.root.locals.region
-  app                      = include.root.locals.app
-  app_name                 = local.app_name
-  tenant                   = local.tenant
-  base_url                 = local.base_url
+  region   = include.root.locals.region
+  app      = include.root.locals.app
+  app_name = local.app_name
+  tenant   = local.tenant
+  base_url = local.base_url
 
-  database_engine_version  = "8.0.mysql_aurora.3.04.1"
-  vpc_cidr                 = "10.0.0.0/16"
-  public_subnet_cidrs      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  private_subnet_cidrs     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-  availability_zones       = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
-  ecs_settings             = merge(local.ecs_settings, { env_vars : local.env_vars })
+  database_engine_version = "8.0.mysql_aurora.3.04.1"
+  vpc_cidr                = "10.0.0.0/16"
+  public_subnet_cidrs     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  private_subnet_cidrs    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  availability_zones      = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+  ecs_settings            = merge(local.ecs_settings, { env_vars : local.env_vars })
 }
 
 remote_state {
