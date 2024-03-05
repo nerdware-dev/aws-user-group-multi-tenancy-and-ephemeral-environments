@@ -35,32 +35,25 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      # TODO: Is it necessary to create a separate folder?
       - name: Apply Terraform
         run: |
           cd infrastructure/tenants/remus
           terragrunt apply -auto-approve
 
-        # mkdir $PR_NUMBER
-        # cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
-        # cd $PR_NUMBER
       # TODO: Maybe create docker container earlier
       - name: Deploy to ECS
         run: |
-          cd ./backend
-
           export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR
-          docker build -t "$ECR":latest -f Dockerfile .
+
+          docker build -t "$ECR":latest -f ./backend/Dockerfile ./backend
           docker push "$ECR":latest
 
-          export SERVICE_ARN=arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$APP_NAME-service
           aws ecs update-service --cluster $APP_NAME-cluster \
-            --service SERVICE_ARN \
+            --service arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$APP_NAME-service \
             --region eu-central-1 \
             --force-new-deployment > /dev/null
 
-      # TODO: Build frontend for specific tenant
       - name: Deploy Frontend
         run: |
           cd ./frontend
