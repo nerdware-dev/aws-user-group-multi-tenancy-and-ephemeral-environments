@@ -38,16 +38,16 @@ jobs:
       # TODO: Is it necessary to create a separate folder?
       - name: Apply Terraform
         run: |
-          cd infrastructure/tenants
-          mkdir $PR_NUMBER
-          cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
-          cd $PR_NUMBER
+          cd infrastructure/tenants/remus
           terragrunt apply -auto-approve
 
+        # mkdir $PR_NUMBER
+        # cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
+        # cd $PR_NUMBER
       # TODO: Maybe create docker container earlier
       - name: Deploy to ECS
         run: |
-          cd $ROOT_DIR/backend
+          cd ./backend
 
           export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR
@@ -63,7 +63,10 @@ jobs:
       # TODO: Build frontend for specific tenant
       - name: Deploy Frontend
         run: |
-          cd $ROOT_DIR/frontend
+          cd ./frontend
           npm install
+
+          echo "NEXT_PUBLIC_API_URL=TODO" >> .env.local
+
           npm run build
           aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete
