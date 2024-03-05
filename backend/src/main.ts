@@ -4,7 +4,8 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: "*",
+    origin: "https://dsyk0b4nlo587.cloudfront.net/",
+    methods: "GET",
   })
 );
 
