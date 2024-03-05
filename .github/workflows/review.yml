@@ -64,7 +64,7 @@ jobs:
 
       # TODO: Extract
       - name: Prepare Review App
-        run: |
+        run: >
           - ROOT_DIR=$(pwd)
           - export SERVICE_NAME=i--$TENANT--$PR_NUMBER-org-service
           - export ECR=i-$TENANT-$PR_NUMBER-org-ecr
