@@ -57,8 +57,7 @@ remote_state {
     {
       bucket         = local.backend.s3_bucket_name
       dynamodb_table = local.backend.dynamodb_table
-      # TODO: Differ per env
-      key            = "terraform-${local.app_name}.tfstate"
+      key = "terraform-${local.app_name}.tfstate"
     }
   )
 }
