@@ -11,24 +11,24 @@ on:
     # - labeled
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # build:
+  #   name: Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: npm
+  #     - name: Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
+  #         cache: npm
 
-      - name: Install dependencies
-        run: npm install
+  #     - name: Install dependencies
+  #       run: npm install
 
-      - name: Build
-        run: npm run build
-    # TODO: Build docker and publish already? => Not money relevant
+  #     - name: Build
+  #       run: npm run build
+  # TODO: Build docker and publish already? => Not money relevant
 
   deploy-review-remus:
     name: Deploy Remus Review
@@ -43,7 +43,7 @@ jobs:
       tg_version: "0.53.2"
       working_dir: "infrastructure"
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     steps:
       - uses: actions/checkout@v4
 
