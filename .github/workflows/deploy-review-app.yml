@@ -1,0 +1,69 @@
+name: "Deploy Review App"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: "The environment to deploy to"
+
+jobs:
+  deploye:
+    name: Deploy Review App
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      TENANT: ${{ vars.TENANT}}
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+      PR_NUMBER: ${{ github.event.number }}
+      APP_PREFIX: ${{ github.event.number }}
+      APP_NAME: ${{ vars.TENANT}}-${{ github.event.number }}-demo
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terragrunt
+        uses: autero1/action-terragrunt@v3
+        with:
+          terragrunt-version: 0.55.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      # TODO: Is it necessary to create a separate folder?
+      - name: Apply Terraform
+        run: |
+          cd infrastructure/tenants
+          mkdir $PR_NUMBER
+          cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
+          cd $PR_NUMBER
+          terragrunt apply -auto-approve
+
+      # TODO: Maybe create docker container earlier
+      - name: Deploy to ECS
+        run: |
+          cd $ROOT_DIR/backend
+
+          export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR
+          docker build -t "$ECR":latest -f Dockerfile .
+          docker push "$ECR":latest
+
+          export SERVICE_ARN=arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$APP_NAME-service
+          aws ecs update-service --cluster $APP_NAME-cluster \
+            --service SERVICE_ARN \
+            --region eu-central-1 \
+            --force-new-deployment > /dev/null
+
+      # TODO: Build frontend for specific tenant
+      - name: Deploy Frontend
+        run: |
+          cd $ROOT_DIR/frontend
+          npm install
+          npm run build
+          aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete

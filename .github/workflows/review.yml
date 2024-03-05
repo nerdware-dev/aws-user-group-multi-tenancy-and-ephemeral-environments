@@ -32,65 +32,7 @@ jobs:
 
   deploy-review-remus:
     name: Deploy Remus Review
-    environment: review-remus
-    env:
-      PR_NUMBER: ${{ github.event.number }}
-      TENANT: ${{ vars.TENANT}}
-      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
-      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      tf_version: "1.5.7"
-      tg_version: "0.53.2"
-      working_dir: "infrastructure"
-    runs-on: ubuntu-latest
-    # needs: build
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ vars.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      #     "hclfmt --terragrunt-check --terragrunt-diff"
-
-      - name: Setup Terragrunt
-        uses: autero1/action-terragrunt@v3
-        with:
-          terragrunt-version: 0.55.2
-
-      # TODO: Extract
-      - name: Prepare Review App
-        run: |
-          ROOT_DIR=$(pwd)
-          export APP_PREFIX=$PR_NUMBER
-          export APP_NAME=$TENANT-$PR_NUMBER-demo
-          export SERVICE_ARN=arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$APP_NAME-service
-          export CLUSTER_NAME=$APP_NAME-cluster
-          export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr
-          export FRONTEND_DESTINATION_BUCKET=s3://$APP_NAME-frontend-bucket
-          cd infrastructure/tenants
-          mkdir $PR_NUMBER
-          cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
-          cd $PR_NUMBER
-          terragrunt apply -auto-approve
-
-          cd $ROOT_DIR/backend
-
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR
-          docker build -t "$ECR":latest -f Dockerfile .
-          docker push "$ECR":latest
-
-          aws ecs update-service --cluster $CLUSTER_NAME \
-            --service SERVICE_ARN \
-            --region eu-central-1 \
-            --force-new-deployment > /dev/null
-
-          cd $ROOT_DIR/frontend
-          npm install
-          npm run build
-
-        # TODO: Build frontend for specific tenant
-        #   - aws s3 sync frontend/dist $FRONTEND_DESTINATION_BUCKET --delete
+    uses: ./.github/workflows/deploy-review-app.yml
+    with:
+      environment: review-remus
+    secrets: inherit
