@@ -66,20 +66,21 @@ jobs:
         run: |
           ROOT_DIR=$(pwd)
           export APP_PREFIX=$PR_NUMBER
-          export SERVICE_NAME=i--$TENANT--$PR_NUMBER-org-service
-          export ECR=i-$TENANT-$PR_NUMBER-org-ecr
-          export CLUSTER_NAME=i--$TENANT--$PR_NUMBER-org-cluster
-          export FRONTEND_DESTINATION_BUCKET=s3://i--$TENANT--$PR_NUMBER-org-frontend-bucket
+          export SERVICE_NAME=i--$TENANT--$PR_NUMBER-demo-service
+          export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/i-$TENANT-$PR_NUMBER-demo-ecr
+          export CLUSTER_NAME=i--$TENANT--$PR_NUMBER-demo-cluster
+          export FRONTEND_DESTINATION_BUCKET=s3://i--$TENANT--$PR_NUMBER-demo-frontend-bucket
           cd infrastructure/tenants
           mkdir $PR_NUMBER
           cp $TENANT/terragrunt.hcl $PR_NUMBER/terragrunt.hcl
           cd $PR_NUMBER
           terragrunt apply -auto-approve
+
           cd $ROOT_DIR/backend
 
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR
-          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest -f Dockerfile .
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR:latest
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR
+          docker build -t $ECR:latest -f Dockerfile .
+          docker push $ECR:latest
 
           aws ecs update-service --cluster $CLUSTER_NAME
           \ --service arn:aws:ecs:eu-central-1:$AWS_ACCOUNT_ID:service/$SERVICE_NAME
