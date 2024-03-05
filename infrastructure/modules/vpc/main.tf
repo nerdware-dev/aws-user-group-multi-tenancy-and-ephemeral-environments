@@ -81,7 +81,7 @@ resource "aws_route_table" "allow_outbound_rt" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat_gateway[count.index].id
+    nat_gateway_id = aws_nat_gateway.nat_gateway[count.index].id
   }
 
   tags = {

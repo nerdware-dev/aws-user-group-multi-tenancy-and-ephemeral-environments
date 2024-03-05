@@ -4,15 +4,12 @@ on:
   pull_request:
     branches:
       - "**"
-    # types:
-    #   - opened
-    #   - synchronize
-    #   - reopened
-    # - labeled
+    types: [opened, synchronize, labeled]
 
 jobs:
   deploy-review-remus:
     name: Deploy Remus Review
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-remus') == true
     uses: ./.github/workflows/deploy-review-app.yml
     with:
       environment: review-remus
