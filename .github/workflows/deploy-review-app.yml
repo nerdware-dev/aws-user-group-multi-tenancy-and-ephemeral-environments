@@ -62,7 +62,7 @@ jobs:
           cd ./frontend
           npm install
 
-          echo "NEXT_PUBLIC_API_URL=remus-1-demo-lb-272434160.eu-central-1.elb.amazonaws.com" >> .env.local
+          echo "NEXT_PUBLIC_API_URL=http://remus-1-demo-lb-272434160.eu-central-1.elb.amazonaws.com" >> .env.local
 
           npm run build
           aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete
