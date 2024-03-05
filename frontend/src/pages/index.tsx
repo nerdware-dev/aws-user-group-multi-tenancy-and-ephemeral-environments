@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
-// TODO: Inject API URL
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/data`;
 
 export default function Home() {
