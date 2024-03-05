@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/data`;
 
 export default function Home() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(API_URL)
-      .then((res) => res.json())
+      .then((res) => res.text())
       .then((data) => {
         setData(data);
         setLoading(false);
