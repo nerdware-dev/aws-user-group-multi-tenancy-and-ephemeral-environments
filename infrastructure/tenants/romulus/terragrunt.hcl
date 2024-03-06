@@ -1,5 +1,5 @@
 locals {
-  tenant   = "romolus"
+  tenant   = "romulus"
   app      = length(get_env("APP", "")) > 0 ? get_env("APP") : include.root.locals.app
   app_name = "${local.tenant}-${local.app}"
 

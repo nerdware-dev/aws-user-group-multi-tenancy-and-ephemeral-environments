@@ -14,10 +14,10 @@ jobs:
       app: rome
     secrets: inherit
 
-  deploy-romolus:
-    name: Deploy Romolus
+  deploy-romulus:
+    name: Deploy Romulus
     uses: ./.github/workflows/deploy-app.yml
     with:
-      environment: romolus
+      environment: romulus
       app: rome
     secrets: inherit
