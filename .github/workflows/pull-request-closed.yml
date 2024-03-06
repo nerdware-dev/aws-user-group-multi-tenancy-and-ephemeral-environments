@@ -1,0 +1,24 @@
+name: "PR Closed"
+
+on:
+  pull_request:
+    branches:
+      - "**"
+    types: [closed]
+
+jobs:
+  stop-review-remus:
+    name: Stop Remus Review
+    uses: ./.github/workflows/stop-app.yml
+    with:
+      environment: review-remus
+      app: ${{ github.event.number }}-rome
+    secrets: inherit
+
+  stop-review-romulus:
+    name: Stop Romulus Review
+    uses: ./.github/workflows/stop-app.yml
+    with:
+      environment: review-romulus
+      app: ${{ github.event.number }}-rome
+    secrets: inherit
