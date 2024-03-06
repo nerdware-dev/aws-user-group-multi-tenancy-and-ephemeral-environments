@@ -1,0 +1,40 @@
+name: "Stop Review App"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: "The environment to stop"
+
+jobs:
+  stop:
+    name: Stop Review App
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    env:
+      TENANT: ${{ vars.TENANT}}
+      # Needed for terragrunt to disinguish different review environments
+      APP_PREFIX: ${{ github.event.number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terragrunt
+        uses: autero1/action-terragrunt@v3
+        with:
+          terragrunt-version: 0.55.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Destroy Terraform
+        run: |
+          cd infrastructure/tenants/$TENANT
+          terragrunt destroy -auto-approve

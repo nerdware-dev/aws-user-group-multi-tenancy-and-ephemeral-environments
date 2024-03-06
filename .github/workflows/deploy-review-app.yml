@@ -9,7 +9,7 @@ on:
         description: "The environment to deploy to"
 
 jobs:
-  deploye:
+  deploy:
     name: Deploy Review App
     runs-on: ubuntu-latest
     environment:
@@ -39,9 +39,10 @@ jobs:
           aws-region: eu-central-1
 
       - name: Apply Terraform
+        # terragrunt apply -auto-approve
         run: |
           cd infrastructure/tenants/$TENANT
-          terragrunt apply -auto-approve
+          terragrunt run-all apply --terragrunt-non-interactive
 
       - name: Deploy to ECS
         run: |
