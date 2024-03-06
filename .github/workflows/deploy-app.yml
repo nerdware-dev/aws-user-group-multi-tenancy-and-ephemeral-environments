@@ -44,7 +44,6 @@ jobs:
           aws-region: eu-central-1
 
       - name: Apply Terraform
-        # terragrunt apply -auto-approve
         run: |
           cd infrastructure/tenants/$TENANT
           terragrunt run-all apply --terragrunt-non-interactive

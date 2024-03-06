@@ -15,3 +15,12 @@ jobs:
       environment: review-remus
       app: ${{ github.event.number }}-rome
     secrets: inherit
+
+  deploy-review-romolus:
+    name: Deploy Romolus Review
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-romolus') == true
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      environment: review-romolus
+      app: ${{ github.event.number }}-rome
+    secrets: inherit
