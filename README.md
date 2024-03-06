@@ -1,6 +1,6 @@
 # AWS User Group 🎙️
 
-## Summary
+## Summary of Rome
 
 This project is a simple Node.js backend and React frontend application, deployed to AWS. It's designed as a multi-tenancy system where each tenant is completely isolated in a separate AWS account. One of the key features is a GitHub workflow that creates an ephemeral environment based on a pull request. This allows us to verify the state of the environment before merging the pull request. Once the pull request is merged, the ephemeral environment is shut down.
 
