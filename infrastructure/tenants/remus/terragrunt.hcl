@@ -8,7 +8,7 @@ locals {
     dynamodb_table = "${local.app_name}--terraform-state-lock-table"
   }
 
-  base_url = "${local.tenant}.${local.app}.nerdware.dev"
+  base_url = "${local.tenant}.${local.app}.demo.nerdware.dev"
 
   ecs_settings = {
     health_check_path = "/health"

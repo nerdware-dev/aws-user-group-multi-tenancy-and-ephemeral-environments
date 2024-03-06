@@ -1,0 +1,14 @@
+name: "Main"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-remus:
+    name: Deploy Remus
+    uses: ./.github/workflows/deploy-review-app.yml
+    with:
+      environment: remus
+    secrets: inherit

@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
-      url: https://${{ vars.TENANT}}.${{ github.event.number }}-demo.nerdware.dev
+      url: https://${{ vars.TENANT}}.${{ github.event.number }}-rome.demo.nerdware.dev
     env:
       TENANT: ${{ vars.TENANT}}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       PR_NUMBER: ${{ github.event.number }}
       # Needed for terragrunt to disinguish different review environments
       APP_PREFIX: ${{ github.event.number }}
-      APP_NAME: ${{ vars.TENANT}}-${{ github.event.number }}-demo
+      APP_NAME: ${{ vars.TENANT}}-${{ github.event.number }}-rome
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
           cd ./frontend
           npm install
 
-          echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$PR_NUMBER-demo.nerdware.dev'" >> .env.local
+          echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$PR_NUMBER.demo.nerdware.dev'" >> .env.local
 
           npm run build
           aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete
