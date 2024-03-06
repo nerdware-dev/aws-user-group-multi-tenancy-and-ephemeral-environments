@@ -9,7 +9,6 @@ on:
 jobs:
   stop-review-remus:
     name: Stop Remus Review
-    if: contains(github.event.pull_request.labels.*.name, 'deploy-remus') == false
     uses: ./.github/workflows/stop-app.yml
     with:
       environment: review-remus
@@ -18,7 +17,6 @@ jobs:
 
   stop-review-romulus:
     name: Stop Romulus Review
-    if: contains(github.event.pull_request.labels.*.name, 'deploy-romulus') == false
     uses: ./.github/workflows/stop-app.yml
     with:
       environment: review-romulus
