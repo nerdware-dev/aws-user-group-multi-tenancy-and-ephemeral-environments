@@ -67,7 +67,7 @@ jobs:
           cd ./frontend
           npm install
 
-          echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$PR_NUMBER.demo.nerdware.dev'" >> .env.local
+          echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$APP.demo.nerdware.dev'" >> .env.local
 
           npm run build
           aws s3 sync ./out s3://$TENANT_APP-frontend-bucket --delete
