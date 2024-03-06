@@ -1,0 +1,26 @@
+name: "PR Opened"
+
+on:
+  pull_request:
+    branches:
+      - "**"
+    types: [opened]
+
+jobs:
+  deploy-review-remus:
+    name: Deploy Remus Review
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-remus') == true
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      environment: review-remus
+      app: ${{ github.event.number }}-rome
+    secrets: inherit
+
+  deploy-review-romulus:
+    name: Deploy Romulus Review
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-romulus') == true
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      environment: review-romulus
+      app: ${{ github.event.number }}-rome
+    secrets: inherit
