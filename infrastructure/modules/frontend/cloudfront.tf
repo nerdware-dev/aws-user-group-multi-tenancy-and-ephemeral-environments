@@ -14,10 +14,10 @@ resource "aws_cloudfront_distribution" "this" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  # comment             = var.aliases[0]
+  comment             = var.aliases[0]
   default_root_object = "index.html"
 
-  # aliases = var.aliases
+  aliases = var.aliases
 
   default_cache_behavior {
     allowed_methods            = var.allowed_methods
@@ -71,14 +71,8 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  # viewer_certificate {
-  #   acm_certificate_arn = var.cloudfront_ssl_cert_arn
-  #   ssl_support_method  = "sni-only"
-  # }
-
-  #   viewer_certificate {
-  #   acm_certificate_arn = "arn:aws:iam::123456789012:server-certificate/cloudfront/your-cert-name"
-  #   ssl_support_method  = "sni-only"
-  # }
-
+  viewer_certificate {
+    acm_certificate_arn = var.cloudfront_ssl_cert_arn
+    ssl_support_method  = "sni-only"
+  }
 }

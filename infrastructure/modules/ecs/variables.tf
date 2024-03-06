@@ -33,9 +33,9 @@ variable "log_retention_in_days" {
   default = 7
 }
 
-# variable "alb_tls_cert_arn" {
-#   description = "The ARN of the TLS certificate to use for the ALB"
-# }
+variable "alb_tls_cert_arn" {
+  description = "The ARN of the TLS certificate to use for the ALB"
+}
 
 variable "ecs_role_arn" {
   type        = string

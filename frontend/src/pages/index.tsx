@@ -1,14 +1,15 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/data`;
+
 export default function Home() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(true);
 
-  // TODO: Inject API URL
   useEffect(() => {
-    fetch("/api/profile-data")
-      .then((res) => res.json())
+    fetch(API_URL)
+      .then((res) => res.text())
       .then((data) => {
         setData(data);
         setLoading(false);

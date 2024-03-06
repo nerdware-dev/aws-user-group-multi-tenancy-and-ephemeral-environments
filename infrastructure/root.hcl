@@ -1,6 +1,6 @@
 locals {
   region = "eu-central-1"
-  app    = "demo"
+  app    = "rome"
 }
 
 remote_state {

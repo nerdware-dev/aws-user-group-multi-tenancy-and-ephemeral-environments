@@ -6,7 +6,6 @@ variable "app_name" {
 variable "app" {
   description = "The root app name this terraform plan should manage. Affects resource names."
   type        = string
-  default = "demo"
 }
 
 variable "tenant" {
