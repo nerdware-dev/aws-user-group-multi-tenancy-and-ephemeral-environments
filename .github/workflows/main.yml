@@ -13,3 +13,11 @@ jobs:
       environment: remus
       app: rome
     secrets: inherit
+
+  deploy-romolus:
+    name: Deploy Romolus
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      environment: romolus
+      app: rome
+    secrets: inherit
