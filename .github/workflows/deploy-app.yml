@@ -1,4 +1,4 @@
-name: "Deploy Review App"
+name: "Deploy App"
 
 on:
   workflow_call:
@@ -7,21 +7,26 @@ on:
         required: true
         type: string
         description: "The environment to deploy to"
+      app:
+        required: true
+        type: string
+        description: "The app to deploy"
 
 jobs:
   deploy:
-    name: Deploy Review App
+    # TODO: Review or not, doesn't matter
+    name: Deploy App
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
-      url: https://${{ vars.TENANT}}.${{ github.event.number }}-rome.demo.nerdware.dev
+      url: https://${{ vars.TENANT}}.${{ inputs.app }}.demo.nerdware.dev
     env:
       TENANT: ${{ vars.TENANT}}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       PR_NUMBER: ${{ github.event.number }}
-      # Needed for terragrunt to disinguish different review environments
-      APP_PREFIX: ${{ github.event.number }}
-      APP_NAME: ${{ vars.TENANT}}-${{ github.event.number }}-rome
+      # Needed for terragrunt to disinguish different environments
+      APP: ${{ inputs.app }}
+      TENANT_APP: ${{ vars.TENANT}}-${{ inputs.app }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,14 +51,14 @@ jobs:
 
       - name: Deploy to ECS
         run: |
-          export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$APP_NAME-ecr
+          export ECR=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$TENANT_APP-ecr
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR
 
           docker build -t "$ECR":latest -f ./backend/Dockerfile ./backend
           docker push "$ECR":latest
 
-          aws ecs update-service --cluster $APP_NAME-cluster \
-            --service arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$APP_NAME-service \
+          aws ecs update-service --cluster $TENANT_APP-cluster \
+            --service arn:aws:ecs:eu-central-1:"$AWS_ACCOUNT_ID":service/$TENANT_APP-service \
             --region eu-central-1 \
             --force-new-deployment > /dev/null
 
@@ -65,4 +70,4 @@ jobs:
           echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$PR_NUMBER.demo.nerdware.dev'" >> .env.local
 
           npm run build
-          aws s3 sync ./out s3://$APP_NAME-frontend-bucket --delete
+          aws s3 sync ./out s3://$TENANT_APP-frontend-bucket --delete

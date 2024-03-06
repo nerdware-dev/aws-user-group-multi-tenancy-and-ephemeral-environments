@@ -1,0 +1,17 @@
+name: "PR closed"
+
+on:
+  pull_request:
+    branches:
+      - "**"
+    types: [closed]
+
+jobs:
+  # TODO: Only if was previously created?
+  stop-review-remus:
+    name: Deploy Remus Review
+    uses: ./.github/workflows/stop-app.yml
+    with:
+      environment: review-remus
+      app: ${{ github.event.number }}-rome
+    secrets: inherit

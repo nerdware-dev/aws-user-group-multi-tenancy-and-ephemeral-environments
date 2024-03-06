@@ -10,7 +10,8 @@ jobs:
   deploy-review-remus:
     name: Deploy Remus Review
     if: contains(github.event.pull_request.labels.*.name, 'deploy-remus') == true
-    uses: ./.github/workflows/deploy-review-app.yml
+    uses: ./.github/workflows/deploy-app.yml
     with:
       environment: review-remus
+      app: ${{ github.event.number }}-rome
     secrets: inherit

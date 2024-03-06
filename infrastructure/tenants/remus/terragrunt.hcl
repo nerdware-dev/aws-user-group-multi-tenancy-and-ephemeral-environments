@@ -1,6 +1,6 @@
 locals {
   tenant   = "remus"
-  app      = length(get_env("APP_PREFIX", "")) > 0 ? "${get_env("APP_PREFIX", "")}-${include.root.locals.app}" : include.root.locals.app
+  app      = length(get_env("APP", "")) > 0 ? get_env("APP") : include.root.locals.app
   app_name = "${local.tenant}-${local.app}"
 
   backend = {

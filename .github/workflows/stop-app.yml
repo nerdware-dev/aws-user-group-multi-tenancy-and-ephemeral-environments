@@ -1,4 +1,4 @@
-name: "Stop Review App"
+name: "Stop App"
 
 on:
   workflow_call:
@@ -7,17 +7,20 @@ on:
         required: true
         type: string
         description: "The environment to stop"
-
+      app:
+        required: true
+        type: string
+        description: "The app to stop"
 jobs:
   stop:
-    name: Stop Review App
+    name: Stop App
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
     env:
       TENANT: ${{ vars.TENANT}}
-      # Needed for terragrunt to disinguish different review environments
-      APP_PREFIX: ${{ github.event.number }}
+      # Needed for terragrunt to disinguish different environments
+      APP: ${{ inputs.app }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
