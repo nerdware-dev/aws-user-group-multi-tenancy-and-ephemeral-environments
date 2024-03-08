@@ -1,5 +1,5 @@
 #  Use an official Node.js runtime image as a base
-FROM --platform=linux/amd64 node:18-alpine as build
+FROM --platform=linux/amd64 node:18-alpine AS build
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
