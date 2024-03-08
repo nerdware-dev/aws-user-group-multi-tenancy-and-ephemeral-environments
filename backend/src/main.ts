@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import { config } from "dotenv";
 
+config();
 const app = express();
 app.use(
   cors({
@@ -10,8 +12,8 @@ app.use(
   })
 );
 
-app.get("/data", (_: Request, res: Response) => {
-  res.send("Lorem Ipsum!");
+app.get("/tenant", (_: Request, res: Response) => {
+  res.send(process.env.TENANT?.toUpperCase() ?? "UNKNOWN");
 });
 
 app.get("/health", (_: Request, res: Response) => {
