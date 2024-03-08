@@ -38,17 +38,17 @@ module "dns_frontend" {
 
 #### Backend
 
-module "database" {
-  app_name        = var.app_name
-  source          = "../rds"
-  db_max_capacity = 10
-  db_min_capacity = 0.5
-  subnets         = module.vpc.private_subnets_ids
-  vpc_cidr        = var.vpc_cidr
-  vpc_id          = module.vpc.vpc_id
-  database_name   = "orgadmin"
-  engine_version  = var.database_engine_version
-}
+# module "database" {
+#   app_name        = var.app_name
+#   source          = "../rds"
+#   db_max_capacity = 10
+#   db_min_capacity = 0.5
+#   subnets         = module.vpc.private_subnets_ids
+#   vpc_cidr        = var.vpc_cidr
+#   vpc_id          = module.vpc.vpc_id
+#   database_name   = "orgadmin"
+#   engine_version  = var.database_engine_version
+# }
 
 module "backend" {
   source              = "../ecs"
