@@ -63,7 +63,7 @@ jobs:
 
       - name: Deploy Frontend
         run: |
-          cd ./frontend
+          cd ./frontend/$TENANT
           npm install
 
           echo "NEXT_PUBLIC_API_URL='https://api.$TENANT.$APP.demo.nerdware.dev'" >> .env.local

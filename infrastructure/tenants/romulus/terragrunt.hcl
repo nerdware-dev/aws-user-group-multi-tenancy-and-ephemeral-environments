@@ -22,6 +22,7 @@ locals {
   env_vars = {
     APP_NAME = local.app_name
     REGION   = include.root.locals.region
+    TENANT = local.tenant
   }
 }
 
