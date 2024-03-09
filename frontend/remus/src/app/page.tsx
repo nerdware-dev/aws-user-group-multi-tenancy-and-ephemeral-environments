@@ -11,15 +11,17 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-blue-300 to-blue-700">
-      <h1 className="text-6xl font-bold mb-8">Welcome to the Rome</h1>
-      <h1 className="text-4xl font-bold mb-8">of {tenant}</h1>
-      <img
-        src="/remus.jpg"
-        alt="Remus"
-        width={500}
-        height={500}
-      />
-    </main>
+    <div className="relative flex flex-col min-h-screen items-center justify-start pt-24 p-24 bg-gradient-to-b from-blue-300 to-blue-700">
+      <main className="flex flex-col items-center justify-center z-10">
+        <h1 className="text-6xl font-bold mb-8">Welcome to the Rome</h1>
+        <h1 className="text-4xl font-bold mb-8">of {tenant}</h1>
+        <img
+          src="/remus.jpg"
+          alt="Remus"
+          width={320}
+        />
+      </main>
+      <div className="absolute bottom-0 left-0 w-full h-64 bg-cover bg-center" style={{ backgroundImage: `url(/skyline.png)`, filter: 'brightness(0)' }} />
+    </div>
   );
 }
