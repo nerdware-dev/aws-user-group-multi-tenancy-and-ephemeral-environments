@@ -23,7 +23,7 @@ locals {
     APP_NAME = local.app_name
     REGION   = include.root.locals.region
     TENANT = local.tenant
-    TABLE = "${local.tenant}-table"
+    TABLE = "${local.tenant}-${local.app}-table"
   }
 }
 

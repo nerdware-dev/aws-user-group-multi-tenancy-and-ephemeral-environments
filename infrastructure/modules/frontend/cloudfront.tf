@@ -34,15 +34,6 @@ resource "aws_cloudfront_distribution" "this" {
       }
     }
 
-    dynamic "lambda_function_association" {
-      for_each = var.password_protection ? [1] : []
-      content {
-        event_type   = "viewer-request"
-        include_body = false
-        lambda_arn   = "${aws_lambda_function.basic_auth[0].arn}:${aws_lambda_function.basic_auth[0].version}"
-      }
-    }
-
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = var.min_ttl
     default_ttl            = var.default_ttl
