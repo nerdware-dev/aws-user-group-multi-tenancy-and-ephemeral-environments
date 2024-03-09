@@ -1,12 +1,12 @@
 ### VPC
 
 module "vpc" {
-  source    = "../vpc"
-  app_name  = var.app_name
-  vpc_cidr  = var.vpc_cidr
-  public_subnet_cidrs = var.public_subnet_cidrs
+  source               = "../vpc"
+  app_name             = var.app_name
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
-  availability_zones = var.availability_zones
+  availability_zones   = var.availability_zones
 }
 
 
@@ -36,19 +36,20 @@ module "dns_frontend" {
   }
 }
 
-#### Backend
-
-# module "database" {
-#   app_name        = var.app_name
-#   source          = "../rds"
-#   db_max_capacity = 10
-#   db_min_capacity = 0.5
-#   subnets         = module.vpc.private_subnets_ids
-#   vpc_cidr        = var.vpc_cidr
-#   vpc_id          = module.vpc.vpc_id
-#   database_name   = "orgadmin"
-#   engine_version  = var.database_engine_version
-# }
+module "dynamodb_table" {
+  source         = "../dynamodb" // path to the module
+  app_name       = var.app_name
+  name           = "${var.app_name}-table"
+  read_capacity  = 10
+  write_capacity = 10
+  hash_key       = "Tenant"
+  attributes = [
+    {
+      name = "Tenant"
+      type = "S"
+    }
+  ]
+}
 
 module "backend" {
   source              = "../ecs"
@@ -84,6 +85,7 @@ module "ecr" {
 }
 
 module "iam" {
-  source = "../iam"
-  app_name = var.app_name
+  source                     = "../iam"
+  app_name                   = var.app_name
+  dynamodb_access_policy_arn = module.dynamodb_table.dynamodb_access_policy_arn
 }

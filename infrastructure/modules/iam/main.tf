@@ -22,3 +22,7 @@ resource "aws_iam_role_policy_attachment" "ecs_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "dynamodb_access_attachment" {
+  role       = aws_iam_role.ecs_role.name
+  policy_arn = var.dynamodb_access_policy_arn
+}
