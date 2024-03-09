@@ -4,8 +4,8 @@ locals {
   app_name = "${local.tenant}-${local.app}"
 
   backend = {
-    s3_bucket_name = "${local.app_name}--tf-state"
-    dynamodb_table = "${local.app_name}--terraform-state-lock-table"
+    s3_bucket_name = "${include.root.locals.app}--tf-state"
+    dynamodb_table = "${include.root.locals.app}--terraform-state-lock-table"
   }
 
   base_url = "${local.tenant}.${local.app}.demo.nerdware.dev"

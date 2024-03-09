@@ -1,4 +1,6 @@
-### VPC
+locals {
+  domain = "demo.nerdware.dev"
+}
 
 module "vpc" {
   source               = "../vpc"
@@ -9,14 +11,9 @@ module "vpc" {
   availability_zones   = var.availability_zones
 }
 
-
-### Route53
-
-data "aws_route53_zone" "frontend_zone" {
-  name = "demo.nerdware.dev"
+data "aws_route53_zone" "this" {
+  name = local.domain
 }
-
-### Frontend
 
 module "frontend" {
   source                  = "../frontend"
@@ -29,7 +26,7 @@ module "frontend" {
 module "dns_frontend" {
   source      = "../dns"
   domain_name = var.base_url
-  zone_id     = data.aws_route53_zone.frontend_zone.zone_id
+  zone_id     = data.aws_route53_zone.this.zone_id
   linked_url  = module.frontend.cloudfront_url
   providers = {
     aws.us_east_1 = aws.us_east_1
@@ -65,14 +62,12 @@ module "backend" {
   ecs_settings        = var.ecs_settings
 }
 
-data "aws_route53_zone" "backend_zone" {
-  name = "demo.nerdware.dev"
-}
+
 
 module "dns_backend" {
   source      = "../dns"
   domain_name = "api.${var.base_url}"
-  zone_id     = data.aws_route53_zone.backend_zone.zone_id
+  zone_id     = data.aws_route53_zone.this.zone_id
   linked_url  = module.backend.load_balancer_url
   providers = {
     aws.us_east_1 = aws.us_east_1

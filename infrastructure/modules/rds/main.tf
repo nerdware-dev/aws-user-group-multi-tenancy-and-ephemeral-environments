@@ -4,7 +4,7 @@ resource "aws_db_subnet_group" "this" {
 }
 
 resource "aws_rds_cluster" "cluster" {
-  cluster_identifier                  = replace("${var.app_name}-rds", "--", "-")
+  cluster_identifier                  = "${var.app_name}-rds"
   engine                              = "aurora-mysql"
   engine_mode                         = "provisioned"
   engine_version                      = var.engine_version
