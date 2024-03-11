@@ -1,0 +1,10 @@
+.vscode/*
+
+node_modules
+dist
+
+.terraform
+.terraform.lock.hcl
+terraform.tfstate.backup
+terraform.tfstate
+.terragrunt-cache

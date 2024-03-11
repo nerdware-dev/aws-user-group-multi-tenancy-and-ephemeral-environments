@@ -1,0 +1,23 @@
+name: "Main"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-remus:
+    name: Deploy Remus
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      environment: remus
+      app: rome
+    secrets: inherit
+
+  deploy-romulus:
+    name: Deploy Romulus
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      environment: romulus
+      app: rome
+    secrets: inherit
