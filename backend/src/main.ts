@@ -65,7 +65,7 @@ seedDb();
 app.get("/tenant", async (_: Request, res: Response) => {
   try {
     const data = await getItem();
-    res.send(data.Item?.Tenant.toUpperCase() ?? "UNKNOWN");
+    res.send(data.Item?.Tenant.toUpperCase() + ' AWS User Group' ?? "UNKNOWN");
   } catch (error) {
     res.status(500).send("Error retrieving tenant");
   }
