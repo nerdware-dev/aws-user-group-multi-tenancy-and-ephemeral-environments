@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="relative flex flex-col min-h-screen items-center justify-start pt-24 p-24 bg-gradient-to-b from-blue-300 to-blue-700">
       <main className="flex flex-col items-center justify-center z-10">
-        <h1 className="text-6xl font-bold mb-8">Welcome to the Rome</h1>
+        <h1 className="text-6xl font-bold mb-8">Welcome to the Rome Remus</h1>
         <h1 className="text-4xl font-bold mb-8">of {tenant}</h1>
         <img
           src="/remus.jpg"
